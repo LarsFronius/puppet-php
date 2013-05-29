@@ -1,5 +1,5 @@
 class php::params(
-  $repo = undef
+  $version = undef
   ) {
   case $::osfamily {
     debian: {
@@ -19,6 +19,9 @@ class php::params(
       $apache_ini = "${apache_dir}php.ini"
       $apache_package_name = 'libapache2-mod-php5'
       $apache_service_name = 'apache2'
+      if $version == 'php54' and $::lsbdistcodename == 'precise' {
+        $repository = 'ondrej-php54'
+      }
     }
     default: {
       case $::operatingsystem {
