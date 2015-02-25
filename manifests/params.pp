@@ -1,5 +1,7 @@
 class php::params(
-  $version = undef
+  $version = undef,
+  $purge_conf = true,
+  $purge_pool = true
   ) {
   case $::osfamily {
     debian: {

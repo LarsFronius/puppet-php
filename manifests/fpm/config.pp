@@ -3,18 +3,10 @@ class php::fpm::config {
     ensure  => directory,
     owner   => 'root',
     group   => 'root',
-    purge   => true,
+    purge   => $php::params::purge_conf,
     recurse => true,
     force   => true,
     require => Class['php::fpm::install'],
-    notify  => Class['php::fpm::service'],
-  }
-
-  file { "${php::params::fpm_dir}conf.d":
-    ensure  => link,
-    target  => '../conf.d',
-    force   => true,
-    require => File[$php::params::fpm_dir],
     notify  => Class['php::fpm::service'],
   }
 
@@ -22,10 +14,10 @@ class php::fpm::config {
     ensure  => directory,
     owner   => 'root',
     group   => 'root',
-    purge   => true,
+    purge   => $php::params::purge_pool,
     recurse => true,
     force   => true,
-    require => Class['php::fpm::install'],
+    require => [Class['php::fpm::install'],File[$php::params::fpm_dir]],
     notify  => Class['php::fpm::service'],
   }
 
@@ -35,7 +27,7 @@ class php::fpm::config {
     group   => 'root',
     content => $php::fpm::fpm_ini_content,
     source  => $php::fpm::fpm_ini_source,
-    require => Class['php::fpm::install'],
+    require => [Class['php::fpm::install'],File[$php::params::fpm_dir]],
     notify  => Class['php::fpm::service'],
   }
 
@@ -45,7 +37,7 @@ class php::fpm::config {
     group   => 'root',
     content => $php::fpm::fpm_conf_content,
     source  => $php::fpm::fpm_conf_source,
-    require => Class['php::fpm::install'],
+    require => [Class['php::fpm::install'],File[$php::params::fpm_dir]],
     notify  => Class['php::fpm::service'],
   }
 }

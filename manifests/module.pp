@@ -25,20 +25,9 @@ define php::module(
     require => $real_require,
   }
 
-  $source_real = $source ? {
-    undef   => undef,
-    true    => [
-      "puppet:///files/${::fqdn}/etc/php5/conf.d/${file_name}",
-      "puppet:///files/${hostgroup}/etc/php5/conf.d/${file_name}",
-      "puppet:///files/${::domain}/etc/php5/conf.d/${file_name}",
-      "puppet:///files/global/etc/php5/conf.d/${file_name}",
-    ],
-    default => $source,
-  }
-
   $content_real = $content ? {
     undef   => undef,
-    default => template("${content}${file_name}.erb"),
+    default => $content
   }
 
   file { $file_name:
@@ -48,7 +37,6 @@ define php::module(
     owner   => 'root',
     group   => 'root',
     notify  => $notify,
-    source  => $source_real,
     content => $content_real,
     require => [
       Class['php'],
